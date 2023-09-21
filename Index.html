@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Enlazamos el archivo CSS externo -->
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div id="board"></div>
+    <p id="status"></p>
+
+    <script>
+        const board = document.getElementById('board');
+        const status = document.getElementById('status');
+        let currentPlayer = 'X';
+        const cells = Array(9).fill(null);
+
+        function checkWinner() {
+            const winningCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            for (const combo of winningCombinations) {
+                const [a, b, c] = combo;
+                if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+                    return cells[a];
+                }
+            }
+
+            if (cells.every(cell => cell)) {
+                return 'draw';
+            }
+
+            return null;
+        }
+
+        function handleClick(event) {
+            const cell = event.target;
+            const index = cell.dataset.index;
+
+            if (!cells[index] && !checkWinner()) {
+                cells[index] = currentPlayer;
+                cell.textContent = currentPlayer;
+                cell.style.cursor = 'not-allowed';
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+                const winner = checkWinner();
+                if (winner === 'draw') {
+                    status.textContent = '¡Es un empate!';
+                } else if (winner) {
+                    status.textContent = `¡${winner} ha ganado!`;
+                }
+            }
+        }
+
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.index = i;
+            cell.addEventListener('click', handleClick);
+            board.appendChild(cell);
+        }
+    </script>
+</body>
+</html>
